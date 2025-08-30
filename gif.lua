@@ -226,12 +226,23 @@ local segments = {
 -- maxTimePerYield is the maximum allowed time this program can run for in millis before the next yield
 -- yieldCallback is the function that can be called after yielding
 function gif.load(filename, maxTimePerYield, yieldCallback)
-    local file, err = fs.open(filename, "r")
-    if file==nil then
-        return file, err
+    local contents
+    
+    if filename:sub(1,8) == "https://" then
+        local request,err = http.get(filename)
+        if request==nil then
+            return request, err
+        end
+        contents = request.readAll()
+        request.close()
+    else
+        local file, err = fs.open(filename, "r")
+        if file==nil then
+            return file, err
+        end
+        contents = file.readAll()
+        file.close()
     end
-    local contents = file.readAll()
-    file.close()
 
     local out = {}
 
