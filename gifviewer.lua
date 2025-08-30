@@ -25,15 +25,15 @@ if vid then
                 local pix = img.data[x + y * img.width + 1]
 
                 if not (img.transparencyFlag and (pix==img.transparencyIndex)) then
-                    box.canvas[y+img.top][x+img.left] = 2^(pix%16)
+                    box.canvas[y+img.top+1][x+img.left+1] = 2^(pix%16)
                 end
             end
         end
 
         box:render()
         if img.disposalMethod==2 then
-            for x=0,vid.canvasWidth-1 do
-                for y=0,vid.canvasHeight-1 do
+            for x=1,vid.canvasWidth do
+                for y=1,vid.canvasHeight do
                     box.canvas[y][x] = 2^(vid.backgroundColorIndex%16)
                 end
             end
