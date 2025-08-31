@@ -4,7 +4,7 @@ local gif = require "gif"
 local args = {...}
 
 local progress = 0
-local maxTime = 5000
+local maxTime = 200
 local vid, err = gif.load(args[1], maxTime, function()
     term.setCursorPos(1, 1)
     term.write("Progress: " .. tostring(progress))
