@@ -3,13 +3,7 @@ local gif = require "gif"
 
 local args = {...}
 
-local progress = 0
-local maxTime = 200
-local vid, err = gif.load(args[1], maxTime, function()
-    term.setCursorPos(1, 1)
-    term.write("Progress: " .. tostring(progress))
-    progress = progress + maxTime
-end)
+local vid, err = gif.load(args[1])
 
 if vid then
     local frame = 1
