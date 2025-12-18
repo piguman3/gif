@@ -294,8 +294,8 @@ function gif.load(filename, maxTimePerYield, yieldCallback)
                     if sentinel=="!" then -- Skip unknown extension
                         seekAllBlocks(stream)
                     else
-                        local hexcode = string.format("%x %x", string.byte(sentinel), string.byte(newSentinel:sub(2,2)))
-                        return nil, "Invalid segment: " .. hexcode
+                        local hexcode = string.format("%02X %02X", string.byte(sentinel), string.byte(newSentinel:sub(2,2)))
+                        return nil, "Invalid segment: " .. hexcode .. " at " .. stream.head
                     end
                 end
                 segments[newSentinel](stream, out)
