@@ -58,13 +58,15 @@ local function seekAllBlocks(stream)
 end
 
 local function consumeAllBlocks(stream)
-    local res = ""
+    local resTbl = {}
+    local i = 1
     while 1 do
         local blockSize = consume(stream, 1):byte()
         if blockSize==0 then break end
-        res = res .. consume(stream, blockSize)
+        resTbl[i] = consume(stream, blockSize)
+        i = i + 1
     end
-    return res
+    return table.concat(resTbl)
 end
 
 local function consumeImageData(stream, out, image)
@@ -125,19 +127,14 @@ local function consumeImageData(stream, out, image)
                 for k,v in pairs(codeTable[code]) do
                     table.insert(indexTable, v)
                 end
-                codeTable[#codeTable+1] = {}
-                for k,v in pairs(codeTable[prevCode]) do
-                    codeTable[#codeTable][k] = v
-                end
+                codeTable[#codeTable+1] = {table.unpack(codeTable[prevCode])}
                 table.insert(codeTable[#codeTable], codeTable[code][1])
             else
-                codeTable[code] = {}
-                for k,v in pairs(codeTable[prevCode]) do
-                    codeTable[code][k] = v
-                end
-                table.insert(codeTable[code], codeTable[prevCode][1])
-                for k,v in pairs(codeTable[code]) do
-                    table.insert(indexTable, v)
+                local prev = codeTable[prevCode]
+                codeTable[code] = {table.unpack(prev)}
+                table.insert(codeTable[code], prev[1])
+                for i = 1, #codeTable[code] do
+                    table.insert(indexTable, codeTable[code][i])
                 end
             end
             prevCode = code
